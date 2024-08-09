@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management System</title>
+</head>
+<body>
+    Enter Student Name: <input type="text" name="name" id="name">
+    <br><br>
+    Enter Student Roll Number: <input type="text" name="roll" id="roll">
+    <br><br>
+    Enter Student Branch: <input type="text" name="branch" id="br">
+    <br><br>
+    Enter Student Year: <input type="text" name="year" id="yr">
+    <br><br>
+    Enter Student CGPA:<input type="text" name="cgpa" id="cg">
+    <br><br>
+    <input type="button" name="insert" value="INSERT" id="b1" onclick={insertData}>
+    <input type="button" name="delete" value="DELETE" id="b2">
+    <input type="button" name="update" value="UPDATE" id="b3">
+    <input type="button" name="display" value="DISPLAY" id="b4">
+    <h2 id="d"></h2>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+        import { getDatabase, ref, set, remove, update, get, child } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtF2zETWzPyBtpCw-xYLftAiDI_nOGUUc",
+            authDomain: "b81a6738-demo.firebaseapp.com",
+            databaseURL: "https://b81a6738-demo-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "b81a6738-demo",
+            storageBucket: "b81a6738-demo.appspot.com",
+            messagingSenderId: "367413336520",
+            appId: "1:367413336520:web:a516bec81c4ab472f308fd"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const dbref = getDatabase(app); // Returns reference to the realtime database created
+
+        document.getElementById("b1").addEventListener("click", insertData);
+        document.getElementById("b2").addEventListener("click", deleteData);
+        document.getElementById("b3").addEventListener("click", updateData);
+        document.getElementById("b4").addEventListener("click", displayData);
+
+        function insertData() {
+            const n = document.getElementById("name").value;
+            const r = document.getElementById("roll").value;
+            const b = document.getElementById("br").value;
+            const y = document.getElementById("yr").value;
+            const c = document.getElementById("cg").value;
+            const ob = {
+                name: n,
+                branch: b,
+                year: y,
+                cgpa: c
+            };
+            set(ref(dbref, "Student/" + r), ob) // Used to insert data into Firebase
+                .then(() => {
+                    alert("Student Data Inserted Successfully");
+                })
+                .catch((error) => {
+                    alert("Failed to insert data: " + error);
+                });
+        }
+
+        function deleteData() {
+            const r = document.getElementById("roll").value;
+            if (r === "") {
+                alert("Please enter roll number");
+            } else {
+                remove(ref(dbref, "Student/" + r))
+                    .then(() => {
+                        alert("Student Data Deleted Successfully");
+                    })
+                    .catch((error) => {
+                        alert("Failed to delete data: " + error);
+                    });
+            }
+        }
+
+        function updateData() {
+            const n = document.getElementById("name").value;
+            const r = document.getElementById("roll").value;
+            const b = document.getElementById("br").value;
+            const y = document.getElementById("yr").value;
+            const c = document.getElementById("cg").value;
+            const ob = {
+                name: n,
+                branch: b,
+                year: y,
+                cgpa: c
+            };
+            update(ref(dbref, "Student/" + r), ob) // Used to update data in Firebase
+                .then(() => {
+                    alert("Student Data Updated Successfully");
+                })
+                .catch((error) => {
+                    alert("Failed to update data: " + error);
+                });
+        }
+
+        function displayData() {
+            const r = document.getElementById("roll").value;
+            if (r === "") {
+                alert("Please enter roll number");
+            } else {
+                get(child(ref(dbref), "Student/" + r))
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const ob = snapshot.val();
+                            document.getElementById("d").innerHTML = "Roll Number:" + r + "<br>" + "Name:" + ob.name + "<br>" + "Branch:" + ob.branch + "<br>" + "Year:" + ob.year + "<br>" + "CGPA:" + ob.cgpa;
+                        } else {
+                            alert("No Data Available");
+                        }
+                    })
+                    .catch((error) => {
+                        alert("Failed to retrieve data: " + error);
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
