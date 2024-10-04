@@ -1,6 +1,6 @@
 const exp = require('express');
 const app = exp();
-const fs = require('fs')
+const fs = require('fs')    
 const stu = require('std.json');
 const bp = require('body-parser');
 const port = 9000;
